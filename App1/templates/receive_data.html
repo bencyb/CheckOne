@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Data from Callback</title>
+	<style>
+		body {
+			font-family: Arial, sans-serif;
+			margin: 20px;
+		}
+
+		ul {
+			list-style: none;
+			padding: 0;
+		}
+
+		li {
+			margin: 10px 0;
+			padding: 10px;
+			border: 1px solid #ddd;
+			/* border-radius: 3px; */
+		}
+	</style>
+	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+	<!-- Remove the previous AJAX script -->
+<script>
+    $(document).ready(function() {
+        // Function to update the data
+        function updateData() {
+            $.ajax({
+                url: '/api/callback_listener/', 
+                type: 'GET',
+                success: function(data) {
+                    // Update the data in the <ul> element
+                    var dataList = data.map(function(item) {
+                        return '<li>' + item.data + '</li>';
+                    });
+                    $('#data-list').html(dataList.join(''));
+                },
+                error: function() {
+                    // Handle the error case
+                    $('#data-list').html('<li>Error fetching data.</li>');
+                }
+            });
+        }
+
+        // Function to auto-refresh data
+        function autoRefreshData() {
+            setInterval(updateData, 5000); // Fetch and update the data every 5 seconds
+        }
+
+        // Fetch and update the data initially
+        updateData();
+
+        // Start auto-refresh after 5 seconds
+        setTimeout(autoRefreshData, 5000);
+    });
+</script>
+
+</head>
+<body>
+	<h1>Data from Callback</h1>
+	<ul id="data-list">
+        {% for data_item in data_from_callback %}
+            <li>{{ data_item.data }}</li>
+        {% endfor %}
+    </ul>
+</body>
+</html>
